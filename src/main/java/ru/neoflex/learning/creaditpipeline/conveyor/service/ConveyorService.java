@@ -13,13 +13,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConveyorService {
 
-    //ToDo doc
+    /**
+     * Расчёт возможных условий кредита:
+     * На основании LoanApplicationRequestDTO происходит прескоринг,
+     * создаётся 4 кредитных предложения LoanOfferDTO на основании всех возможных комбинаций булевских полей
+     * isInsuranceEnabled и isSalaryClient (false-false, false-true, true-false, true-true)
+     *
+     * @param request - {@link LoanApplicationRequestDto параметры запроса}
+     * @return - список {@link LoanOfferDto кредитных предложений}
+     */
     public List<LoanOfferDto> offers(LoanApplicationRequestDto request) {
         //ToDo implementation
         return null;
     }
 
-    //ToDo doc
+    /**
+     * Происходит скоринг данных, высчитывание ставки(rate), полной стоимости кредита(psk),
+     * размер ежемесячного платежа(monthlyPayment), график ежемесячных платежей
+     *
+     * @param request - {@link ScoringDataDto - параметры запроса}
+     * @return - {@link CreditDto параметры кредита}
+     */
     public CreditDto calculation(ScoringDataDto request) {
         //ToDo implementation
         return null;
