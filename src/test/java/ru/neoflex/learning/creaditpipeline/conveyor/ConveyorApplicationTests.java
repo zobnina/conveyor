@@ -16,4 +16,8 @@ class ConveyorApplicationTests {
     //ToDo test prescoring age
     //ToDo test prescoring email
     //ToDo test prescoring passport
+    //ToDo test offers calcRate
+    //ToDo test offers calcPsk
+    //ToDo test offers calcMonthPayment
+    //ToDo test offers sorting
 }

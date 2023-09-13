@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 import ru.neoflex.learning.creaditpipeline.conveyor.validation.AdultBirthDate;
 
@@ -16,6 +18,7 @@ import java.time.LocalDate;
 
 @Schema(description = "Параметры запроса")
 @Value
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class LoanApplicationRequestDto {
 
     @Schema(description = "Сумма кредита", minimum = "10000", defaultValue = "10000")

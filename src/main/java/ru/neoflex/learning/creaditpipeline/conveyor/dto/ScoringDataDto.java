@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 //ToDo schema
 //ToDo validation
+//ToDo add no args constructor
 @Value
 public class ScoringDataDto {
 

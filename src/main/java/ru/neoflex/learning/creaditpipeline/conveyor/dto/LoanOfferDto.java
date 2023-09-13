@@ -1,11 +1,17 @@
 package ru.neoflex.learning.creaditpipeline.conveyor.dto;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 //ToDo schema
-@Value
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoanOfferDto {
 
     Long applicationId;
@@ -18,6 +24,7 @@ public class LoanOfferDto {
 
     BigDecimal monthlyPayment;
 
+    //ToDo fraction part
     BigDecimal rate;
 
     Boolean isInsuranceEnabled;
