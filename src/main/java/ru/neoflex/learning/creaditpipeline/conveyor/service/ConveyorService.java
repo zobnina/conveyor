@@ -2,23 +2,27 @@ package ru.neoflex.learning.creaditpipeline.conveyor.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.CreditDto;
+import org.openapitools.model.LoanApplicationRequestDto;
+import org.openapitools.model.LoanOfferDto;
+import org.openapitools.model.ScoringDataDto;
 import org.springframework.stereotype.Service;
-import ru.neoflex.learning.creaditpipeline.conveyor.dto.CreditDto;
-import ru.neoflex.learning.creaditpipeline.conveyor.dto.LoanApplicationRequestDto;
-import ru.neoflex.learning.creaditpipeline.conveyor.dto.LoanOfferDto;
-import ru.neoflex.learning.creaditpipeline.conveyor.dto.ScoringDataDto;
+import ru.neoflex.learning.creaditpipeline.conveyor.exception.ExceptionCode;
+import ru.neoflex.learning.creaditpipeline.conveyor.exception.PrescoringException;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConveyorService {
 
+    private final ScoringService scoringService;
     private final OfferCalculationService offerCalculationService;
 
     /**
@@ -32,13 +36,16 @@ public class ConveyorService {
      */
     public List<LoanOfferDto> offers(LoanApplicationRequestDto request) {
 
+        if (isNotTrue(scoringService.validAge(request.getBirthdate()))) {
+            throw new PrescoringException(ExceptionCode.AGE_NOT_VALID.getMessage());
+        }
         return Stream.of(
                 createLoanOffer(request, false, false),
                 createLoanOffer(request, false, true),
                 createLoanOffer(request, true, false),
                 createLoanOffer(request, true, true))
             .sorted(Comparator.comparing(LoanOfferDto::getRate).reversed())
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
