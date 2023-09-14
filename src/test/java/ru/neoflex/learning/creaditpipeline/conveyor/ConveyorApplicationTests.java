@@ -20,4 +20,5 @@ class ConveyorApplicationTests {
     //ToDo test offers calcPsk
     //ToDo test offers calcMonthPayment
     //ToDo test offers sorting
+    //ToDo test scoring
 }

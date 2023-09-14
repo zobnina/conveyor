@@ -12,7 +12,7 @@ import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MONTHS_
 
 @Service
 @RequiredArgsConstructor
-public class OfferCalculationService {
+public class CalculationService {
 
     private final ConveyorProperties properties;
 
@@ -50,6 +50,19 @@ public class OfferCalculationService {
         }
 
         return psk;
+    }
+
+    public BigDecimal calcInterestPayment(BigDecimal remainingDebt, BigDecimal rate) {
+
+        return remainingDebt.multiply(rateMonth(rate));
+    }
+
+    public BigDecimal calcTotalPayment(BigDecimal remainingDebt, BigDecimal monthlyPayment, BigDecimal interestPayment) {
+
+        if (remainingDebt.compareTo(monthlyPayment) > 0) {
+            return monthlyPayment;
+        }
+        return remainingDebt.add(interestPayment);
     }
 
     private BigDecimal calcBySalaryClient(BigDecimal rate, boolean isSalaryClient) {

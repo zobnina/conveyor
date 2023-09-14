@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.neoflex.learning.creaditpipeline.conveyor.exception.PrescoringException;
+import ru.neoflex.learning.creaditpipeline.conveyor.exception.ScoringException;
 
 import java.time.OffsetDateTime;
 
@@ -22,14 +23,28 @@ public class ConveyorExceptionHandler {
     public ResponseEntity<ErrorMessage> handlePrescoringException(HttpServletRequest request, PrescoringException e) {
         log.error("handlePrescoringException() - exception = {}", ExceptionUtils.getStackTrace(e));
 
-        final ErrorMessage errorMessage = ErrorMessage.builder()
+        final ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, e);
+        return ResponseEntity.unprocessableEntity().body(errorMessage);
+    }
+
+    @ExceptionHandler(ScoringException.class)
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY, reason = "Scoring Error")
+    public ResponseEntity<ErrorMessage> handleScoringException(HttpServletRequest request, ScoringException e) {
+        log.error("handleScoringException() - exception = {}", ExceptionUtils.getStackTrace(e));
+
+        final ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, e);
+        return ResponseEntity.unprocessableEntity().body(errorMessage);
+    }
+
+    private ErrorMessage getErrorMessage(HttpServletRequest request, HttpStatus status, Exception e) {
+        return ErrorMessage.builder()
             .timestamp(OffsetDateTime.now())
             .exception(e.getClass().getSimpleName())
-            .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
-            .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase())
+            .status(status.value())
+            .error(status.getReasonPhrase())
             .path(request.getRequestURI())
             .message(e.getLocalizedMessage())
             .build();
-        return ResponseEntity.unprocessableEntity().body(errorMessage);
     }
+
 }

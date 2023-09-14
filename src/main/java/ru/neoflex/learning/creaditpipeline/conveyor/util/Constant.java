@@ -9,7 +9,6 @@ import java.math.RoundingMode;
 @UtilityClass
 public class Constant {
 
-    public static final int RATE_SCALE = 2;
     public static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
     public static final MathContext MATH_CONTEXT_5 = new MathContext(5, RoundingMode.HALF_UP);
     public static final int MONTHS_PER_YEAR = 12;
