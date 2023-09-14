@@ -41,7 +41,7 @@ public class CalculationService {
                               boolean isInsuranceEnabled, boolean isSalaryClient) {
 
         final BigDecimal psk = monthlyPayment.multiply(BigDecimal.valueOf(term));
-        if (Boolean.TRUE.equals(isInsuranceEnabled)) {
+        if (isInsuranceEnabled) {
             double yearCount = (double) term / MONTHS_PER_YEAR;
             BigDecimal insuranceCostTotal = insuranceCost(amount, isSalaryClient)
                 .multiply(BigDecimal.valueOf(yearCount));
@@ -67,7 +67,7 @@ public class CalculationService {
 
     private BigDecimal calcBySalaryClient(BigDecimal rate, boolean isSalaryClient) {
 
-        if (Boolean.TRUE.equals(isSalaryClient)) {
+        if (isSalaryClient) {
             return rate.multiply(HUNDRED.subtract(properties.getRate().getSalaryClient()).divide(HUNDRED, MATH_CONTEXT_5));
         }
         return rate;
@@ -75,7 +75,7 @@ public class CalculationService {
 
     private BigDecimal calcByInsurance(BigDecimal rate, boolean isInsuranceEnabled) {
 
-        if (Boolean.TRUE.equals(isInsuranceEnabled)) {
+        if (isInsuranceEnabled) {
             return rate.multiply(HUNDRED.subtract(properties.getRate().getInsurance()).divide(HUNDRED, MATH_CONTEXT_5));
         }
         return rate;
@@ -87,7 +87,7 @@ public class CalculationService {
 
     private BigDecimal insuranceCost(BigDecimal amount, boolean isSalaryClient) {
 
-        if (Boolean.TRUE.equals(isSalaryClient)) {
+        if (isSalaryClient) {
             return amount.multiply(properties.getInsurance().getSalaryClientPercent()).divide(HUNDRED, MATH_CONTEXT_5);
         }
         return amount.multiply(properties.getInsurance().getPercent()).divide(HUNDRED, MATH_CONTEXT_5);
