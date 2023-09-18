@@ -29,7 +29,7 @@ public class ScoringService {
     public boolean validAge(LocalDate birthdate) {
 
         final LocalDate now = LocalDate.now();
-        if (birthdate.isAfter(now)) {
+        if (birthdate.isBefore(now)) {
             return calcAge(birthdate) >= 18;
         }
         return false;
@@ -44,6 +44,7 @@ public class ScoringService {
         rate = scoringMaritalStatus(rate, scoringDataDto.getMaritalStatus());
         rate = scoringDependentAmount(rate, scoringDataDto.getDependentAmount());
         rate = scoringGenderAge(rate, scoringDataDto.getGender(), scoringDataDto.getBirthdate());
+        //ToDo scoring work experience
 
         return rate;
     }

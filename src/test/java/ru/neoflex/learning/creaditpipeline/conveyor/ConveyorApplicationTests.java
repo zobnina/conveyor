@@ -10,15 +10,9 @@ class ConveyorApplicationTests {
     void contextLoads() {
     }
 
-    //ToDo test prescoring fio
-    //ToDo test prescoring sum
-    //ToDo test prescoring term
-    //ToDo test prescoring age
-    //ToDo test prescoring email
-    //ToDo test prescoring passport
     //ToDo test offers calcRate
     //ToDo test offers calcPsk
     //ToDo test offers calcMonthPayment
     //ToDo test offers sorting
-    //ToDo test scoring
+    //ToDo test calculation
 }
