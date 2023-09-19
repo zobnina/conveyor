@@ -24,4 +24,6 @@ public class Constant {
     public static final int MARRIED_RATE_DECREASE = 3;
     public static final int MIN_DEPENDENT_AMOUNT = 1;
     public static final int GENDER_RATE = 3;
+    public static final int MIN_TOTAL_EXPERIENCE = 12;
+    public static final int MIN_CURRENT_EXPERIENCE = 3;
 }

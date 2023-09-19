@@ -17,10 +17,12 @@ import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MAX_AGE
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MAX_MALE_AGE;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MID_MANAGER_RATE_DECREASE;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MIN_AGE;
+import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MIN_CURRENT_EXPERIENCE;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MIN_DEPENDENT_AMOUNT;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MIN_FEMALE_AGE;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MIN_MALE_AGE;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MIN_SALARIES_COUNT;
+import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MIN_TOTAL_EXPERIENCE;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.TOP_MANAGER_RATE_DECREASE;
 
 @Service
@@ -37,16 +39,27 @@ public class ScoringService {
 
     public BigDecimal scoring(BigDecimal rate, ScoringDataDto scoringDataDto) {
 
-        scoringAmount(scoringDataDto.getAmount(), scoringDataDto.getEmployment().getSalary());
         scoringAge(scoringDataDto.getBirthdate());
-        rate = scoringEmploymentStatus(rate, scoringDataDto.getEmployment().getEmploymentStatus());
-        rate = scoringPosition(rate, scoringDataDto.getEmployment().getPosition());
+        final EmploymentDto employment = scoringDataDto.getEmployment();
+        rate = scoringEmploymentStatus(rate, employment.getEmploymentStatus());
+        scoringWorkExperience(employment.getWorkExperienceTotal(), employment.getWorkExperienceCurrent());
+        scoringAmount(scoringDataDto.getAmount(), employment.getSalary());
+        rate = scoringPosition(rate, employment.getPosition());
         rate = scoringMaritalStatus(rate, scoringDataDto.getMaritalStatus());
         rate = scoringDependentAmount(rate, scoringDataDto.getDependentAmount());
         rate = scoringGenderAge(rate, scoringDataDto.getGender(), scoringDataDto.getBirthdate());
-        //ToDo scoring work experience
 
         return rate;
+    }
+
+    private void scoringWorkExperience(Integer workExperienceTotal, Integer workExperienceCurrent) {
+
+        if (workExperienceTotal.compareTo(MIN_TOTAL_EXPERIENCE) < 0) {
+            throw new ScoringException(ExceptionCode.INAPPROPRIATE_WORK_EXPERIENCE_TOTAL.getMessage());
+        }
+        if (workExperienceCurrent.compareTo(MIN_CURRENT_EXPERIENCE) < 0) {
+            throw new ScoringException(ExceptionCode.INAPPROPRIATE_WORK_EXPERIENCE_CURRENT.getMessage());
+        }
     }
 
     private void scoringAmount(BigDecimal amount, BigDecimal salary) {

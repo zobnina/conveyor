@@ -294,6 +294,21 @@ components:
           type: boolean
           description: 'Зарплатный клиент'
           example: true
+      required:
+        - amount
+        - term
+        - firstName
+        - lastName
+        - gender
+        - birthdate
+        - passportSeries
+        - passportNumber
+        - maritalStatus
+        - dependentAmount
+        - employment
+        - account
+        - isInsuranceEnabled
+        - isSalaryClient
     CreditDto:
       type: object
       description: 'Параметры кредита'
@@ -374,6 +389,11 @@ components:
           type: integer
           description: 'Трудовой стаж на текущем месте'
           example: 5
+      required:
+        - employmentStatus
+        - employerInn
+        - workExperienceTotal
+        - workExperienceCurrent
     PaymentScheduleElement:
       type: object
       description: 'График выплат'

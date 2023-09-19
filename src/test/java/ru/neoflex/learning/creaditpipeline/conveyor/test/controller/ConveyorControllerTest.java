@@ -5,7 +5,9 @@ import lombok.SneakyThrows;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openapitools.model.EmploymentDto;
 import org.openapitools.model.LoanApplicationRequestDto;
+import org.openapitools.model.ScoringDataDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.neoflex.learning.creaditpipeline.conveyor.exception.ExceptionCode;
 import ru.neoflex.learning.creaditpipeline.conveyor.exception.PrescoringException;
+import ru.neoflex.learning.creaditpipeline.conveyor.exception.ScoringException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ConveyorControllerTest {
 
     private static final String CONVEYOR_OFFERS_URL = "/conveyor/offers";
+    private static final String CONVEYOR_CALCULATION_URL = "/conveyor/calculation";
+    private static final LocalDate NOW = LocalDate.now();
     private static final JsonMapper JSON_MAPPER = JsonMapper.builder().findAndAddModules().build();
 
     @Autowired
@@ -147,18 +152,8 @@ class ConveyorControllerTest {
     @SneakyThrows
     void testPrescoringAge() {
 
-        final LocalDate now = LocalDate.now();
-        final LoanApplicationRequestDto content = getLoanApplicationRequestDto().birthdate(now);
-        mockMvc.perform(post(CONVEYOR_OFFERS_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JSON_MAPPER.writeValueAsBytes(content)))
-            .andExpect(status().isUnprocessableEntity())
-            .andExpect(jsonPath("$.timestamp").value(new StringContains(now.format(DateTimeFormatter.ISO_LOCAL_DATE))))
-            .andExpect(jsonPath("$.exception").value(PrescoringException.class.getSimpleName()))
-            .andExpect(jsonPath("$.status").value(HttpStatus.UNPROCESSABLE_ENTITY.value()))
-            .andExpect(jsonPath("$.error").value(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()))
-            .andExpect(jsonPath("$.path").value(CONVEYOR_OFFERS_URL))
-            .andExpect(jsonPath("$.message").value(ExceptionCode.AGE_NOT_VALID.getMessage()));
+        final LoanApplicationRequestDto content = getLoanApplicationRequestDto().birthdate(NOW);
+        checkUnprocessableEntity(JSON_MAPPER.writeValueAsBytes(content), PrescoringException.class, CONVEYOR_OFFERS_URL, ExceptionCode.AGE_NOT_VALID);
     }
 
     @Test
@@ -177,26 +172,44 @@ class ConveyorControllerTest {
 
     @Test
     @DisplayName("POST /conveyor/calculation")
+    @SneakyThrows
     void testScoringUnemployed() {
-        //ToDo
+
+        final ScoringDataDto request = getScoringDataDto(getEmploymentDto().employmentStatus(EmploymentDto.EmploymentStatusEnum.UNEMPLOYED));
+        checkUnprocessableEntity(JSON_MAPPER.writeValueAsBytes(request), ScoringException.class, CONVEYOR_CALCULATION_URL, ExceptionCode.UNEMPLOYED_STATUS);
     }
 
     @Test
     @DisplayName("POST /conveyor/calculation")
+    @SneakyThrows
     void testScoringAmount() {
-        //ToDo
+
+        final ScoringDataDto request = getScoringDataDto(getEmploymentDto()).amount(BigDecimal.valueOf(1000000000));
+        checkUnprocessableEntity(JSON_MAPPER.writeValueAsBytes(request), ScoringException.class, CONVEYOR_CALCULATION_URL, ExceptionCode.AMOUNT_TOO_BIG);
     }
 
     @Test
     @DisplayName("POST /conveyor/calculation")
+    @SneakyThrows
     void testScoringAge() {
-        //ToDo
+
+        ScoringDataDto request = getScoringDataDto(getEmploymentDto()).birthdate(NOW);
+        checkUnprocessableEntity(JSON_MAPPER.writeValueAsBytes(request), ScoringException.class, CONVEYOR_CALCULATION_URL, ExceptionCode.INAPPROPRIATE_AGE);
+
+        request = getScoringDataDto(getEmploymentDto()).birthdate(LocalDate.of(1900, 1, 1));
+        checkUnprocessableEntity(JSON_MAPPER.writeValueAsBytes(request), ScoringException.class, CONVEYOR_CALCULATION_URL, ExceptionCode.INAPPROPRIATE_AGE);
     }
 
     @Test
     @DisplayName("POST /conveyor/calculation")
+    @SneakyThrows
     void testScoringWorkExperience() {
-        //ToDo
+
+        ScoringDataDto request = getScoringDataDto(getEmploymentDto().workExperienceTotal(10));
+        checkUnprocessableEntity(JSON_MAPPER.writeValueAsBytes(request), ScoringException.class, CONVEYOR_CALCULATION_URL, ExceptionCode.INAPPROPRIATE_WORK_EXPERIENCE_TOTAL);
+
+        request = getScoringDataDto(getEmploymentDto().workExperienceCurrent(2));
+        checkUnprocessableEntity(JSON_MAPPER.writeValueAsBytes(request), ScoringException.class, CONVEYOR_CALCULATION_URL, ExceptionCode.INAPPROPRIATE_WORK_EXPERIENCE_CURRENT);
     }
 
     private LoanApplicationRequestDto getLoanApplicationRequestDto() {
@@ -213,11 +226,57 @@ class ConveyorControllerTest {
             .build();
     }
 
-    private void checkBadRequest(byte[] content) throws Exception {
+    private ScoringDataDto getScoringDataDto(EmploymentDto employmentDto) {
+        return ScoringDataDto.builder()
+            .amount(BigDecimal.valueOf(10000))
+            .term(6)
+            .firstName("Ivan")
+            .lastName("Ivanov")
+            .gender(ScoringDataDto.GenderEnum.MALE)
+            .birthdate(LocalDate.of(2000, 1, 1))
+            .passportSeries("0000")
+            .passportNumber("000000")
+            .maritalStatus(ScoringDataDto.MaritalStatusEnum.SINGLE)
+            .dependentAmount(0)
+            .employment(employmentDto)
+            .account("12345678900987654321")
+            .isInsuranceEnabled(false)
+            .isSalaryClient(false)
+            .build();
+    }
+
+    private EmploymentDto getEmploymentDto() {
+        return EmploymentDto.builder()
+            .employmentStatus(EmploymentDto.EmploymentStatusEnum.EMPLOYED)
+            .employerInn("1234567890")
+            .salary(BigDecimal.valueOf(10000))
+            .position(EmploymentDto.PositionEnum.WORKER)
+            .workExperienceTotal(13)
+            .workExperienceCurrent(4)
+            .build();
+    }
+
+    @SneakyThrows
+    private void checkBadRequest(byte[] content) {
 
         mockMvc.perform(post(CONVEYOR_OFFERS_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
             .andExpect(status().isBadRequest());
+    }
+
+    @SneakyThrows
+    private void checkUnprocessableEntity(byte[] request, Class<?> exception, String path, ExceptionCode message) {
+
+        mockMvc.perform(post(path)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(jsonPath("$.timestamp").value(new StringContains(NOW.format(DateTimeFormatter.ISO_LOCAL_DATE))))
+            .andExpect(jsonPath("$.exception").value(exception.getSimpleName()))
+            .andExpect(jsonPath("$.status").value(HttpStatus.UNPROCESSABLE_ENTITY.value()))
+            .andExpect(jsonPath("$.error").value(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()))
+            .andExpect(jsonPath("$.path").value(path))
+            .andExpect(jsonPath("$.message").value(message.getMessage()));
     }
 }
