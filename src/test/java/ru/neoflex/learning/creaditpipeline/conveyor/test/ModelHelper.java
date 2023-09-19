@@ -25,7 +25,7 @@ public interface ModelHelper {
 
     default ScoringDataDto getScoringDataDto(EmploymentDto employmentDto) {
         return ScoringDataDto.builder()
-            .amount(BigDecimal.valueOf(10000))
+            .amount(BigDecimal.valueOf(100000))
             .term(6)
             .firstName("Ivan")
             .lastName("Ivanov")

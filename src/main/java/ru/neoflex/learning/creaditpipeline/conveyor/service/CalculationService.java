@@ -6,6 +6,8 @@ import ru.neoflex.learning.creaditpipeline.conveyor.properties.ConveyorPropertie
 
 import java.math.BigDecimal;
 
+import static java.math.RoundingMode.HALF_UP;
+import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.DEFAULT_SCALE;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.HUNDRED;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MATH_CONTEXT_5;
 import static ru.neoflex.learning.creaditpipeline.conveyor.util.Constant.MONTHS_PER_YEAR;
@@ -22,7 +24,7 @@ public class CalculationService {
         rate = calcByInsurance(rate, isInsuranceEnabled);
         rate = calcBySalaryClient(rate, isSalaryClient);
 
-        return rate;
+        return rate.setScale(DEFAULT_SCALE, HALF_UP);
     }
 
     public BigDecimal calcMonthPayment(BigDecimal amount, BigDecimal rate, Integer term) {
@@ -34,7 +36,7 @@ public class CalculationService {
         final BigDecimal pmDiv = pm.divide(powMinusOne, MATH_CONTEXT_5);
         final BigDecimal pmPlusFraction = pm.add(pmDiv);
 
-        return amount.multiply(pmPlusFraction);
+        return amount.multiply(pmPlusFraction).setScale(DEFAULT_SCALE, HALF_UP);
     }
 
     public BigDecimal calcPsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term,
@@ -46,15 +48,15 @@ public class CalculationService {
             BigDecimal insuranceCostTotal = insuranceCost(amount, isSalaryClient)
                 .multiply(BigDecimal.valueOf(yearCount));
 
-            return psk.add(insuranceCostTotal);
+            return psk.add(insuranceCostTotal).setScale(DEFAULT_SCALE, HALF_UP);
         }
 
-        return psk;
+        return psk.setScale(DEFAULT_SCALE, HALF_UP);
     }
 
     public BigDecimal calcInterestPayment(BigDecimal remainingDebt, BigDecimal rate) {
 
-        return remainingDebt.multiply(rateMonth(rate));
+        return remainingDebt.multiply(rateMonth(rate)).setScale(DEFAULT_SCALE, HALF_UP);
     }
 
     public BigDecimal calcTotalPayment(BigDecimal remainingDebt, BigDecimal monthlyPayment, BigDecimal interestPayment) {
@@ -62,7 +64,7 @@ public class CalculationService {
         if (remainingDebt.compareTo(monthlyPayment) > 0) {
             return monthlyPayment;
         }
-        return remainingDebt.add(interestPayment);
+        return remainingDebt.add(interestPayment).setScale(DEFAULT_SCALE, HALF_UP);
     }
 
     private BigDecimal calcBySalaryClient(BigDecimal rate, boolean isSalaryClient) {

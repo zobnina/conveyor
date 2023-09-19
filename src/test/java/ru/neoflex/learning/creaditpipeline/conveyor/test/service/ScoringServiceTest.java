@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.openapitools.model.EmploymentDto;
 import org.openapitools.model.ScoringDataDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import ru.neoflex.learning.creaditpipeline.conveyor.service.ScoringService;
+import ru.neoflex.learning.creaditpipeline.conveyor.test.IT;
 import ru.neoflex.learning.creaditpipeline.conveyor.test.ModelHelper;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@IT
 class ScoringServiceTest implements ModelHelper {
 
     @Autowired

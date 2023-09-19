@@ -11,6 +11,7 @@ public class Constant {
 
     public static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
     public static final MathContext MATH_CONTEXT_5 = new MathContext(5, RoundingMode.HALF_UP);
+    public static final int DEFAULT_SCALE = 2;
     public static final int MONTHS_PER_YEAR = 12;
     public static final int MIN_SALARIES_COUNT = 20;
     public static final int MIN_AGE = 20;
