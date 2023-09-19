@@ -18,8 +18,6 @@ paths:
       operationId: conveyor_offers
       summary: "Расчёт возможных условий кредита"
       description: "Расчёт возможных условий кредита"
-      tags:
-        - Offers
       requestBody:
         description: Параметры запроса
         content:
@@ -47,8 +45,6 @@ paths:
       operationId: conveyor_calculation
       summary: "Скоринг данных, полный расчет параметров кредита"
       description: "Скоринг данных, полный расчет параметров кредита"
-      tags:
-        - Calculation
       requestBody:
         description: Параметры запроса
         content:
