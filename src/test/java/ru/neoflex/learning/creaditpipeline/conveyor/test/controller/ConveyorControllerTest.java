@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.neoflex.learning.creaditpipeline.conveyor.exception.ExceptionCode;
 import ru.neoflex.learning.creaditpipeline.conveyor.exception.PrescoringException;
 import ru.neoflex.learning.creaditpipeline.conveyor.exception.ScoringException;
+import ru.neoflex.learning.creaditpipeline.conveyor.test.ModelHelper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ConveyorControllerTest {
+class ConveyorControllerTest implements ModelHelper {
 
     private static final String CONVEYOR_OFFERS_URL = "/conveyor/offers";
     private static final String CONVEYOR_CALCULATION_URL = "/conveyor/calculation";
@@ -210,50 +211,6 @@ class ConveyorControllerTest {
 
         request = getScoringDataDto(getEmploymentDto().workExperienceCurrent(2));
         checkUnprocessableEntity(JSON_MAPPER.writeValueAsBytes(request), ScoringException.class, CONVEYOR_CALCULATION_URL, ExceptionCode.INAPPROPRIATE_WORK_EXPERIENCE_CURRENT);
-    }
-
-    private LoanApplicationRequestDto getLoanApplicationRequestDto() {
-
-        return LoanApplicationRequestDto.builder()
-            .amount(BigDecimal.valueOf(10000))
-            .term(6)
-            .firstName("Ivan")
-            .lastName("Ivanov")
-            .passportSeries("0000")
-            .passportNumber("000000")
-            .email("email@domain.com")
-            .birthdate(LocalDate.of(2000, 1, 1))
-            .build();
-    }
-
-    private ScoringDataDto getScoringDataDto(EmploymentDto employmentDto) {
-        return ScoringDataDto.builder()
-            .amount(BigDecimal.valueOf(10000))
-            .term(6)
-            .firstName("Ivan")
-            .lastName("Ivanov")
-            .gender(ScoringDataDto.GenderEnum.MALE)
-            .birthdate(LocalDate.of(2000, 1, 1))
-            .passportSeries("0000")
-            .passportNumber("000000")
-            .maritalStatus(ScoringDataDto.MaritalStatusEnum.SINGLE)
-            .dependentAmount(0)
-            .employment(employmentDto)
-            .account("12345678900987654321")
-            .isInsuranceEnabled(false)
-            .isSalaryClient(false)
-            .build();
-    }
-
-    private EmploymentDto getEmploymentDto() {
-        return EmploymentDto.builder()
-            .employmentStatus(EmploymentDto.EmploymentStatusEnum.EMPLOYED)
-            .employerInn("1234567890")
-            .salary(BigDecimal.valueOf(10000))
-            .position(EmploymentDto.PositionEnum.WORKER)
-            .workExperienceTotal(13)
-            .workExperienceCurrent(4)
-            .build();
     }
 
     @SneakyThrows
