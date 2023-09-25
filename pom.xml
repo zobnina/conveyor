@@ -86,9 +86,6 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <additionalModelTypeAnnotations>@lombok.Builder @lombok.experimental.Accessors(chain = true) @lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
                             </configOptions>
-                            <typeMappings>
-                                <typeMapping>double=java.math.BigDecimal</typeMapping>
-                            </typeMappings>
                         </configuration>
                     </execution>
                 </executions>
