@@ -1,6 +1,10 @@
 package ru.neoflex.learning.creaditpipeline.conveyor.service;
 
 import org.openapitools.model.EmploymentDto;
+import org.openapitools.model.EmploymentStatus;
+import org.openapitools.model.Gender;
+import org.openapitools.model.MaritalStatus;
+import org.openapitools.model.Position;
 import org.openapitools.model.ScoringDataDto;
 import org.springframework.stereotype.Service;
 import ru.neoflex.learning.creaditpipeline.conveyor.exception.ExceptionCode;
@@ -70,18 +74,18 @@ public class ScoringService {
         }
     }
 
-    private BigDecimal scoringGenderAge(BigDecimal rate, ScoringDataDto.GenderEnum gender, LocalDate birthdate) {
+    private BigDecimal scoringGenderAge(BigDecimal rate, Gender gender, LocalDate birthdate) {
 
         final int age = calcAge(birthdate);
-        if (ScoringDataDto.GenderEnum.NON_BINARY.equals(gender)) {
+        if (Gender.NON_BINARY.equals(gender)) {
 
             return rate.add(BigDecimal.valueOf(GENDER_RATE));
         }
-        if (ScoringDataDto.GenderEnum.FEMALE.equals(gender) && (age >= MIN_FEMALE_AGE && age <= MAX_AGE)) {
+        if (Gender.FEMALE.equals(gender) && (age >= MIN_FEMALE_AGE && age <= MAX_AGE)) {
 
             return rate.subtract(BigDecimal.valueOf(GENDER_RATE));
         }
-        if (ScoringDataDto.GenderEnum.MALE.equals(gender) && (age >= MIN_MALE_AGE && age <= MAX_MALE_AGE)) {
+        if (Gender.MALE.equals(gender) && (age >= MIN_MALE_AGE && age <= MAX_MALE_AGE)) {
 
             return rate.subtract(BigDecimal.valueOf(GENDER_RATE));
         }
@@ -94,7 +98,7 @@ public class ScoringService {
         return dependentAmount > MIN_DEPENDENT_AMOUNT ? rate.add(BigDecimal.ONE) : rate;
     }
 
-    private BigDecimal scoringMaritalStatus(BigDecimal rate, ScoringDataDto.MaritalStatusEnum maritalStatus) {
+    private BigDecimal scoringMaritalStatus(BigDecimal rate, MaritalStatus maritalStatus) {
 
         return switch (maritalStatus) {
             case MARRIED -> rate.subtract(BigDecimal.valueOf(MARRIED_RATE_DECREASE));
@@ -103,7 +107,7 @@ public class ScoringService {
         };
     }
 
-    private BigDecimal scoringPosition(BigDecimal rate, EmploymentDto.PositionEnum position) {
+    private BigDecimal scoringPosition(BigDecimal rate, Position position) {
 
         return switch (position) {
             case MID_MANAGER -> rate.subtract(BigDecimal.valueOf(MID_MANAGER_RATE_DECREASE));
@@ -112,7 +116,7 @@ public class ScoringService {
         };
     }
 
-    private BigDecimal scoringEmploymentStatus(BigDecimal rate, EmploymentDto.EmploymentStatusEnum employmentStatus) {
+    private BigDecimal scoringEmploymentStatus(BigDecimal rate, EmploymentStatus employmentStatus) {
 
         return switch (employmentStatus) {
             case UNEMPLOYED -> throw new ScoringException(ExceptionCode.UNEMPLOYED_STATUS.getMessage());

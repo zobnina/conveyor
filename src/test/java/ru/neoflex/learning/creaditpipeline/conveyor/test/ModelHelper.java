@@ -1,7 +1,11 @@
 package ru.neoflex.learning.creaditpipeline.conveyor.test;
 
 import org.openapitools.model.EmploymentDto;
+import org.openapitools.model.EmploymentStatus;
+import org.openapitools.model.Gender;
 import org.openapitools.model.LoanApplicationRequestDto;
+import org.openapitools.model.MaritalStatus;
+import org.openapitools.model.Position;
 import org.openapitools.model.ScoringDataDto;
 
 import java.math.BigDecimal;
@@ -29,11 +33,11 @@ public interface ModelHelper {
             .term(6)
             .firstName("Ivan")
             .lastName("Ivanov")
-            .gender(ScoringDataDto.GenderEnum.MALE)
+            .gender(Gender.MALE)
             .birthdate(LocalDate.of(2000, 1, 1))
             .passportSeries("0000")
             .passportNumber("000000")
-            .maritalStatus(ScoringDataDto.MaritalStatusEnum.SINGLE)
+            .maritalStatus(MaritalStatus.SINGLE)
             .dependentAmount(0)
             .employment(employmentDto)
             .account("12345678900987654321")
@@ -44,10 +48,10 @@ public interface ModelHelper {
 
     default EmploymentDto getEmploymentDto() {
         return EmploymentDto.builder()
-            .employmentStatus(EmploymentDto.EmploymentStatusEnum.EMPLOYED)
+            .employmentStatus(EmploymentStatus.EMPLOYED)
             .employerInn("1234567890")
             .salary(BigDecimal.valueOf(10000))
-            .position(EmploymentDto.PositionEnum.WORKER)
+            .position(Position.WORKER)
             .workExperienceTotal(13)
             .workExperienceCurrent(4)
             .build();

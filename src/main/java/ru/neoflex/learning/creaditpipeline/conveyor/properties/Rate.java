@@ -1,26 +1,29 @@
 package ru.neoflex.learning.creaditpipeline.conveyor.properties;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Rate {
 
     /**
      * Базовая ставка
      */
-    private BigDecimal base;
+    BigDecimal base;
 
     /**
      * Цена страховки, уменьшает ставку на
      */
-    private BigDecimal insurance;
+    BigDecimal insurance;
 
     /**
      * Цена зарплатного клиента, уменьшает ставку на
      */
-    private BigDecimal salaryClient;
+    BigDecimal salaryClient;
 }

@@ -81,7 +81,6 @@
                                 <openApiNullable>false</openApiNullable>
                                 <interfaceOnly>true</interfaceOnly>
                                 <serializableModel>true</serializableModel>
-                                <java8>false</java8>
                                 <javaVersion>${java.version}</javaVersion>
                                 <useJakartaEe>true</useJakartaEe>
                                 <additionalModelTypeAnnotations>@lombok.Builder @lombok.experimental.Accessors(chain = true) @lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>

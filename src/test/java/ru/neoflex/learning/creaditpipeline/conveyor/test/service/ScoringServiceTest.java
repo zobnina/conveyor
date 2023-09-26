@@ -2,7 +2,10 @@ package ru.neoflex.learning.creaditpipeline.conveyor.test.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EmploymentDto;
+import org.openapitools.model.EmploymentStatus;
+import org.openapitools.model.Gender;
+import org.openapitools.model.MaritalStatus;
+import org.openapitools.model.Position;
 import org.openapitools.model.ScoringDataDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.neoflex.learning.creaditpipeline.conveyor.service.ScoringService;
@@ -36,34 +39,34 @@ class ScoringServiceTest implements ModelHelper {
     void scoringTest() {
 
         final BigDecimal rate = BigDecimal.TEN;
-        ScoringDataDto scoringDataDto = getScoringDataDto(getEmploymentDto().employmentStatus(EmploymentDto.EmploymentStatusEnum.SELF_EMPLOYED));
+        ScoringDataDto scoringDataDto = getScoringDataDto(getEmploymentDto().employmentStatus(EmploymentStatus.SELF_EMPLOYED));
         assertEquals(rate.add(BigDecimal.ONE), scoringService.scoring(rate, scoringDataDto));
 
-        scoringDataDto = getScoringDataDto(getEmploymentDto().employmentStatus(EmploymentDto.EmploymentStatusEnum.BUSINESS_OWNER));
+        scoringDataDto = getScoringDataDto(getEmploymentDto().employmentStatus(EmploymentStatus.BUSINESS_OWNER));
         assertEquals(rate.add(BigDecimal.valueOf(3)), scoringService.scoring(rate, scoringDataDto));
 
-        scoringDataDto = getScoringDataDto(getEmploymentDto().position(EmploymentDto.PositionEnum.MID_MANAGER));
+        scoringDataDto = getScoringDataDto(getEmploymentDto().position(Position.MID_MANAGER));
         assertEquals(rate.subtract(BigDecimal.valueOf(2)), scoringService.scoring(rate, scoringDataDto));
 
-        scoringDataDto = getScoringDataDto(getEmploymentDto().position(EmploymentDto.PositionEnum.TOP_MANAGER));
+        scoringDataDto = getScoringDataDto(getEmploymentDto().position(Position.TOP_MANAGER));
         assertEquals(rate.subtract(BigDecimal.valueOf(4)), scoringService.scoring(rate, scoringDataDto));
 
-        scoringDataDto = getScoringDataDto(getEmploymentDto()).maritalStatus(ScoringDataDto.MaritalStatusEnum.MARRIED);
+        scoringDataDto = getScoringDataDto(getEmploymentDto()).maritalStatus(MaritalStatus.MARRIED);
         assertEquals(rate.subtract(BigDecimal.valueOf(3)), scoringService.scoring(rate, scoringDataDto));
 
-        scoringDataDto = getScoringDataDto(getEmploymentDto()).maritalStatus(ScoringDataDto.MaritalStatusEnum.DIVORCED);
+        scoringDataDto = getScoringDataDto(getEmploymentDto()).maritalStatus(MaritalStatus.DIVORCED);
         assertEquals(rate.add(BigDecimal.ONE), scoringService.scoring(rate, scoringDataDto));
 
         scoringDataDto = getScoringDataDto(getEmploymentDto()).dependentAmount(2);
         assertEquals(rate.add(BigDecimal.ONE), scoringService.scoring(rate, scoringDataDto));
 
-        scoringDataDto = getScoringDataDto(getEmploymentDto()).gender(ScoringDataDto.GenderEnum.FEMALE).birthdate(LocalDate.now().minusYears(40));
+        scoringDataDto = getScoringDataDto(getEmploymentDto()).gender(Gender.FEMALE).birthdate(LocalDate.now().minusYears(40));
         assertEquals(rate.subtract(BigDecimal.valueOf(3)), scoringService.scoring(rate, scoringDataDto));
 
-        scoringDataDto = getScoringDataDto(getEmploymentDto()).gender(ScoringDataDto.GenderEnum.MALE).birthdate(LocalDate.now().minusYears(40));
+        scoringDataDto = getScoringDataDto(getEmploymentDto()).gender(Gender.MALE).birthdate(LocalDate.now().minusYears(40));
         assertEquals(rate.subtract(BigDecimal.valueOf(3)), scoringService.scoring(rate, scoringDataDto));
 
-        scoringDataDto = getScoringDataDto(getEmploymentDto()).gender(ScoringDataDto.GenderEnum.NON_BINARY);
+        scoringDataDto = getScoringDataDto(getEmploymentDto()).gender(Gender.NON_BINARY);
         assertEquals(rate.add(BigDecimal.valueOf(3)), scoringService.scoring(rate, scoringDataDto));
     }
 }

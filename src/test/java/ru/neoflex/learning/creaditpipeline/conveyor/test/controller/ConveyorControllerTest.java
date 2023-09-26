@@ -5,7 +5,7 @@ import lombok.SneakyThrows;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EmploymentDto;
+import org.openapitools.model.EmploymentStatus;
 import org.openapitools.model.LoanApplicationRequestDto;
 import org.openapitools.model.ScoringDataDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,7 +174,7 @@ class ConveyorControllerTest implements ModelHelper {
     @SneakyThrows
     void testScoringUnemployed() {
 
-        final ScoringDataDto request = getScoringDataDto(getEmploymentDto().employmentStatus(EmploymentDto.EmploymentStatusEnum.UNEMPLOYED));
+        final ScoringDataDto request = getScoringDataDto(getEmploymentDto().employmentStatus(EmploymentStatus.UNEMPLOYED));
         checkUnprocessableEntity(JSON_MAPPER.writeValueAsBytes(request), ScoringException.class, CONVEYOR_CALCULATION_URL, ExceptionCode.UNEMPLOYED_STATUS);
     }
 
