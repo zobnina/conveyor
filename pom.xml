@@ -19,6 +19,8 @@
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+        <sonar.organization>zobnina</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
         <dependency>
@@ -115,7 +117,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <reportFormat>plain</reportFormat>
+                    <reportFormat>plain</reportFormat><includes>
+                    <include>**/*Test.java</include>
+                </includes>
                 </configuration>
             </plugin>
         </plugins>
