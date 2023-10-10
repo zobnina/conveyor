@@ -1,6 +1,6 @@
 FROM openjdk:17-alpine
 RUN mkdir /app
 WORKDIR /app
-COPY /target/conveyor.jar /app/conveyor.jar
-ENTRYPOINT java -jar /app/conveyor.jar
-EXPOSE 8081
+COPY /target/$APP_NAME /app/$APP_NAME
+ENTRYPOINT java -jar /app/$APP_NAME
+EXPOSE $SERVER_PORT
