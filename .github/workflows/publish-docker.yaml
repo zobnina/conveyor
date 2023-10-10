@@ -6,7 +6,6 @@ on:
 
 env:
   APP_NAME: conveyor
-  SERVER_PORT: 8081
 
 jobs:
   push_to_registry:
